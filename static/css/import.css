@@ -1,0 +1,66 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    margin: 0;
+    padding: 40px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    background: rgba(255,255,255,0.1);
+    padding: 50px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+h1 { font-size: 2.8em; margin-bottom: 20px; }
+
+.flash {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 10px;
+    font-size: 1.2em;
+    animation: fadeIn 0.6s;
+}
+.success { background: rgba(0, 200, 0, 0.3); border: 2px solid #0f0; }
+.error   { background: rgba(200, 0, 0, 0.3); border: 2px solid #f00; }
+
+.upload-box {
+    margin: 30px 0;
+}
+input[type="file"] {
+    display: none;
+}
+label {
+    background: rgba(255,255,255,0.2);
+    padding: 20px 40px;
+    border: 3px dashed white;
+    border-radius: 15px;
+    cursor: pointer;
+    display: block;
+    transition: 0.3s;
+}
+label:hover { background: rgba(255,255,255,0.3); }
+
+button {
+    background: #00d4ff;
+    color: white;
+    border: none;
+    padding: 16px 50px;
+    font-size: 1.3em;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,212,255,0.4);
+}
+button:hover { transform: translateY(-3px); }
+
+a { color: #a0f; text-decoration: none; font-weight: bold; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
