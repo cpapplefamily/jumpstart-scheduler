@@ -28,9 +28,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Build header: Time/Round + all rooms
   rooms.forEach(room => {
     const th = document.createElement("th");
-    th.textContent = room;
+    th.innerHTML = `<a href="/room?name=${encodeURIComponent(room)}" style="color:inherit;text-decoration:none;">${escapeHtml(room)}</a>`;
     theadRow.appendChild(th);
-  });
+});
 
   // Group sessions by round + time_slot
   const sessionsByRound = {};
@@ -66,13 +66,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       td.className = "session-cell";
       const session = item.cells[room];
       if (session) {
-        td.innerHTML = `
-          <div class="session-card">
+        td.innerHTML = session ? `
+        <a href="/session?id=${session.id}" class="session-link">
+            <div class="session-card">
             <div class="session-title">${escapeHtml(session.title)}</div>
-            ${session.speakers && session.speakers.length > 0
-              ? `<div class="session-speakers">${session.speakers.map(escapeHtml).join(", ")}</div>`
-              : ""}
-          </div>`;
+            ${session.speakers?.length ? `<div class="session-speakers">${session.speakers.map(escapeHtml).join(", ")}</div>` : ""}
+            </div>
+        </a>` : '';
       }
       tr.appendChild(td);
     });

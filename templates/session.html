@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="page-title">Session • JUMPSTART 2024</title>
+  <link rel="stylesheet" href="/static/css/session.css" />
+</head>
+<body>
+  <div class="container">
+    <a href="/schedule" class="back-btn">← Back to Schedule</a>
+    
+    <div class="session-detail">
+      <header>
+        <h1 id="title"></h1>
+        <div class="meta">
+          <div class="time" id="time"></div>
+          <div class="room" id="room"></div>
+        </div>
+      </header>
+
+      <section class="speakers" id="speakers-section">
+        <h2>Speakers</h2>
+        <div id="speakers"></div>
+      </section>
+
+      <section class="description" id="description-section">
+        <h2>Description</h2>
+        <p id="description"></p>
+      </section>
+
+      <div class="actions">
+        <a href="/schedule" class="btn">Back to Schedule</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/session.js"></script>
+</body>
+</html>

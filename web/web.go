@@ -19,4 +19,6 @@ func SetupRoutes() {
 	http.HandleFunc("/import", ImportPage)
 	http.HandleFunc("/schedule", SchedulePage)
 	http.Handle("/schedule.json", http.FileServer(http.Dir(".")))
+	http.HandleFunc("/session", SessionDetailPage)
+	http.HandleFunc("/room", RoomDetailPage)
 }

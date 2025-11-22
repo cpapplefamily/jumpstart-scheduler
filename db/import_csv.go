@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"github.com/google/uuid"
 )
 
 var rooms = []string{
@@ -59,6 +60,7 @@ func parseSpeakers(raw string) []string {
 
 // Struct for JSON export
 type SessionJSON struct {
+	ID          string   `json:"id"`
 	TimeSlot    string   `json:"time_slot"`
 	StartTime   string   `json:"start_time"`
 	EndTime     string   `json:"end_time"`
@@ -206,8 +208,11 @@ func ImportCSV(path string) (int, error) {
 
 				speakersJSON, _ := json.Marshal(speakers)
 
+				sessionID := uuid.New().String()[:8] // short unique ID
+
 				// Add to JSON export
 				jsonSessions = append(jsonSessions, SessionJSON{
+					ID:          sessionID,
 					TimeSlot:    timeSlot,
 					StartTime:   startTime,
 					EndTime:     endTime,
