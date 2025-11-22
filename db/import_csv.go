@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var rooms = []string{
@@ -243,10 +244,17 @@ func ImportCSV(path string) (int, error) {
 	}
 
 	// Generate schedule.json
-	jsonData, err := json.MarshalIndent(jsonSessions, "", "  ")
-	if err != nil {
-		return count, err // DB succeeded, JSON failed
+	finalData := map[string]interface{}{
+		"rooms": rooms, // the exact same list we use for parsing
+		"sessions": jsonSessions,
+		"generated_at": time.Now().UTC().Format(time.RFC3339),
 	}
+
+	jsonData, err := json.MarshalIndent(finalData, "", "  ")
+	if err != nil {
+		return count, err
+	}
+
 	if err := os.WriteFile("schedule.json", jsonData, 0644); err != nil {
 		return count, err
 	}

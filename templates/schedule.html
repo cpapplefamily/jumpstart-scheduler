@@ -11,26 +11,20 @@
     <header>
       <h1>JUMPSTART 2024 Schedule</h1>
       <p>St. Cloud State University</p>
+      <div id="updated" class="updated hidden"></div>
     </header>
 
     <div class="controls">
-      <input type="text" id="search" placeholder="Search sessions, speakers, rooms..." />
-      <select id="roomFilter">
-        <option value="">All Rooms</option>
-        <option>Voyageurs South</option>
-        <option>Voyageurs North</option>
-        <option>Glacier South</option>
-        <option>Glacier North</option>
-        <option>Cascade</option>
-        <option>Theater</option>
-        <option>Gallery</option>
-        <option>Alumni Room</option>
-        <option>Mississippi</option>
-        <option>Valhalla</option>
-      </select>
+      <input type="text" id="search" placeholder="Search sessions or speakers..." />
     </div>
 
-    <div id="sessions"></div>
+    <div class="table-wrapper">
+      <table id="schedule-table">
+        <thead><tr><th>Time / Round</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
     <div id="no-results" class="hidden">No sessions found.</div>
   </div>
 
