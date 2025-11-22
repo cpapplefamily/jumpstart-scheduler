@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Schedule • JUMPSTART 2024</title>
+  <link rel="stylesheet" href="/static/css/admin_edit.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Schedule Editor</h1>
+      <a href="/" class="back">Back to Schedule</a>
+    </header>
+
+    <div class="controls">
+      <select id="roomFilter">
+        <option value="">Loading rooms...</option>
+      </select>
+      <button id="refresh">Refresh Data</button>
+    </div>
+
+    <div id="sessions"></div>
+
+    <!-- Edit Modal -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <h2>Edit Session</h2>
+        <form id="editForm">
+          <input type="hidden" id="editId" />
+          <label>Room: <strong id="editRoom"></strong></label>
+          <label>Time: <strong id="editTime"></strong></label>
+          <label>Round: <strong id="editRound"></strong></label>
+
+          <label for="editTitle">Title</label>
+          <input type="text" id="editTitle" required />
+
+          <label for="editDesc">Description</label>
+          <textarea id="editDesc" rows="4"></textarea>
+
+          <label for="editSpeakers">Speakers (comma-separated)</label>
+          <input type="text" id="editSpeakers" />
+
+          <div class="actions">
+            <button type="submit">Save Changes</button>
+            <button type="button" class="cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/admin_edit.js"></script>
+</body>
+</html>
