@@ -23,11 +23,10 @@ func parseTimeSlot(raw string) (start, end string) {
 	if matches := timeRangeRegex.FindStringSubmatch(raw); len(matches) == 3 {
 		return matches[1], matches[2]
 	}
-	// Single time or special text (Lunch, etc.)
 	if timeOnlyRegex.MatchString(raw) {
 		return raw, raw
 	}
-	return raw, raw // fallback
+	return raw, raw
 }
 
 func parseSpeakers(raw string) []string {
@@ -41,12 +40,10 @@ func parseSpeakers(raw string) []string {
 		if p == "" {
 			continue
 		}
-		// Handle team numbers like "1234" → "Team 1234"
 		if regexp.MustCompile(`^\d{4,}$`).MatchString(p) && p != "2024" && p != "2025" {
 			result = append(result, "Team "+p)
 			continue
 		}
-		// Handle "Name 1234" → "Name (Team 1234)"
 		if m := regexp.MustCompile(`(.+?)\s+(\d{4,})$`).FindStringSubmatch(p); len(m) > 2 {
 			result = append(result, m[1]+" (Team "+m[2]+")")
 			continue
@@ -57,6 +54,21 @@ func parseSpeakers(raw string) []string {
 		return []string{"Various / Panel"}
 	}
 	return result
+}
+
+// Struct for JSON export
+type SessionJSON struct {
+	TimeSlot    string   `json:"time_slot"`
+	StartTime   string   `json:"start_time"`
+	EndTime     string   `json:"end_time"`
+	Round       string   `json:"round,omitempty"`
+	Room        string   `json:"room"`
+	Title       string   `json:"title"`
+	Description string   `json:"description,omitempty"`
+	Speakers    []string `json:"speakers"`
+	Presenter   string   `json:"presenter,omitempty"`
+	Event       string   `json:"event"`
+	Location    string   `json:"location"`
 }
 
 func ImportCSV(path string) (int, error) {
@@ -73,6 +85,9 @@ func ImportCSV(path string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	// For JSON export
+	var jsonSessions []SessionJSON
 
 	// Clear existing data
 	tx, err := DB.Begin()
@@ -106,7 +121,7 @@ func ImportCSV(path string) (int, error) {
 		}
 		c0 := strings.TrimSpace(record[0])
 
-		// Special non-round events (Check-in, Lunch, Kickoff, etc.)
+		// Special non-round events
 		if timeRegex.MatchString(c0) && len(record) > 1 && record[1] != "" && !strings.Contains(strings.ToLower(record[1]), "round") {
 			timeSlot := c0
 			startTime, endTime := parseTimeSlot(timeSlot)
@@ -122,7 +137,23 @@ func ImportCSV(path string) (int, error) {
 				room = "Atwood Memorial Center"
 			}
 
-			speakersJSON, _ := json.Marshal([]string{"Various / Panel"})
+			speakers := []string{"Various / Panel"}
+			speakersJSON, _ := json.Marshal(speakers)
+
+			// Add to JSON array
+			jsonSessions = append(jsonSessions, SessionJSON{
+				TimeSlot:    timeSlot,
+				StartTime:   startTime,
+				EndTime:     endTime,
+				Room:        room,
+				Title:       title,
+				Description: title,
+				Speakers:    speakers,
+				Presenter:   "Various / Panel",
+				Event:       "2024 JUMPSTART Training Sessions",
+				Location:    "St Cloud State University",
+			})
+
 			_, err := stmt.Exec(timeSlot, startTime, endTime, nil, room, title, title, string(speakersJSON), "Various / Panel")
 			if err != nil {
 				tx.Rollback()
@@ -133,12 +164,11 @@ func ImportCSV(path string) (int, error) {
 		}
 
 		// Round-based sessions
-		if timeRegex.MatchString(c0) && len(record) > 1 && strings.Contains(strings.ToLower(record[1]), "round") {
+		if timeRegex.MatchString(c0) && strings.Contains(strings.ToLower(record[1]), "round") {
 			timeSlot := c0
 			startTime, endTime := parseTimeSlot(timeSlot)
 			round := strings.TrimSpace(record[1])
 
-			// Optional description rows
 			descs := []string{}
 			if i+1 < len(records) && len(records[i+1]) >= 12 && records[i+1][0] == "" && records[i+1][1] == "" {
 				descs = records[i+1][2:]
@@ -175,6 +205,21 @@ func ImportCSV(path string) (int, error) {
 
 				speakersJSON, _ := json.Marshal(speakers)
 
+				// Add to JSON export
+				jsonSessions = append(jsonSessions, SessionJSON{
+					TimeSlot:    timeSlot,
+					StartTime:   startTime,
+					EndTime:     endTime,
+					Round:       round,
+					Room:        rooms[j],
+					Title:       title,
+					Description: desc,
+					Speakers:    speakers,
+					Presenter:   presenter,
+					Event:       "2024 JUMPSTART Training Sessions",
+					Location:    "St Cloud State University",
+				})
+
 				_, err := stmt.Exec(
 					timeSlot, startTime, endTime,
 					round, rooms[j], title, desc,
@@ -189,8 +234,22 @@ func ImportCSV(path string) (int, error) {
 		}
 	}
 
-	// Always add Lunch if not present
+	// Always ensure Lunch exists
 	stmt.Exec("12:05PM - 1:25PM", "12:05PM", "1:25PM", nil, "Garvey Commons", "Lunch Break", "Lunch served in Garvey Commons", `[""]`, "")
 
-	return count, tx.Commit()
+	// Finalize DB
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+
+	// Generate schedule.json
+	jsonData, err := json.MarshalIndent(jsonSessions, "", "  ")
+	if err != nil {
+		return count, err // DB succeeded, JSON failed
+	}
+	if err := os.WriteFile("schedule.json", jsonData, 0644); err != nil {
+		return count, err
+	}
+
+	return count, nil
 }
