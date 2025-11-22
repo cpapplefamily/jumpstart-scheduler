@@ -122,7 +122,7 @@ func ImportCSV(path string) (int, error) {
 		c0 := strings.TrimSpace(record[0])
 
 		// Special non-round events
-		if timeRegex.MatchString(c0) && len(record) > 1 && record[1] != "" && !strings.Contains(strings.ToLower(record[1]), "round") {
+		/* if timeRegex.MatchString(c0) && len(record) > 1 && record[1] != "" && !strings.Contains(strings.ToLower(record[1]), "round") {
 			timeSlot := c0
 			startTime, endTime := parseTimeSlot(timeSlot)
 			title := strings.TrimSpace(record[1])
@@ -161,7 +161,7 @@ func ImportCSV(path string) (int, error) {
 			}
 			count++
 			continue
-		}
+		} */
 
 		// Round-based sessions
 		if timeRegex.MatchString(c0) && strings.Contains(strings.ToLower(record[1]), "round") {
@@ -235,7 +235,7 @@ func ImportCSV(path string) (int, error) {
 	}
 
 	// Always ensure Lunch exists
-	stmt.Exec("12:05PM - 1:25PM", "12:05PM", "1:25PM", nil, "Garvey Commons", "Lunch Break", "Lunch served in Garvey Commons", `[""]`, "")
+	//stmt.Exec("12:05PM - 1:25PM", "12:05PM", "1:25PM", nil, "Garvey Commons", "Lunch Break", "Lunch served in Garvey Commons", `[""]`, "")
 
 	// Finalize DB
 	if err := tx.Commit(); err != nil {
