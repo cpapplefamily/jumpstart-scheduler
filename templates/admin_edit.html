@@ -3,24 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Edit Schedule • JUMPSTART 2024</title>
-  <link rel="stylesheet" href="/static/css/admin_edit.css" />
+  <title>Edit Schedule • JUMPSTART 2024 Admin</title>
+  <link rel="stylesheet" href="/static/css/schedule.css" /> <!-- Reuse your existing CSS -->
+  <link rel="stylesheet" href="/static/css/admin_edit.css" /> <!-- Only modal + extras -->
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Schedule Editor</h1>
-      <a href="/" class="back">Back to Schedule</a>
+      <a href="/schedule" class="back">Back to Public Schedule</a>
     </header>
 
     <div class="controls">
-      <select id="roomFilter">
-        <option value="">Loading rooms...</option>
-      </select>
-      <button id="refresh">Refresh Data</button>
+        <div class="controls-top">
+            <button id="refresh">Refresh Data</button>
+        </div>
+        <div class="controls-bottom">
+            <a href="/admin/logout" class="logout-link">Logout</a>
+        </div>
     </div>
 
-    <div id="sessions"></div>
+    <div class="table-wrapper">
+      <table id="schedule-table">
+        <thead><tr><th>Time / Round</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <!-- Edit Modal -->
     <div id="modal" class="modal hidden">
@@ -37,10 +45,10 @@
           <input type="text" id="editTitle" required />
 
           <label for="editDesc">Description</label>
-          <textarea id="editDesc" rows="4"></textarea>
+          <textarea id="editDesc" rows="5"></textarea>
 
           <label for="editSpeakers">Speakers (comma-separated)</label>
-          <input type="text" id="editSpeakers" />
+          <input type="text" id="editSpeakers" placeholder="Team 254, Team 1114" />
 
           <div class="actions">
             <button type="submit">Save Changes</button>

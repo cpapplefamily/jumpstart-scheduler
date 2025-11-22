@@ -34,5 +34,7 @@ p { font-size: 1.4em; opacity: 0.9; }
 }
 .primary   { background: #00d4ff; color: white; }
 .secondary { background: rgba(255,255,255,0.2); border: 2px solid white; color: white; }
+.admin { background: rgba(241, 13, 13, 0.2); border: 2px solid white; color: white; }
 .primary:hover   { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,212,255,0.4); }
 .secondary:hover { background: rgba(255,255,255,0.3); }
+.admin:hover { background: rgba(255,255,255,0.3); }

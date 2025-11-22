@@ -1,10 +1,12 @@
 let data = { rooms: [], sessions: [] };
+const tbody = document.querySelector("#schedule-table tbody");
+const theadRow = document.querySelector("#schedule-table thead tr");
 const modal = document.getElementById("modal");
 
 document.addEventListener("DOMContentLoaded", () => {
   loadData();
   document.getElementById("refresh").onclick = loadData;
-  document.getElementById("roomFilter").onchange = render;
+ /*  document.getElementById("roomFilter").onchange = render; */
   document.querySelector(".close").onclick = () => modal.classList.add("hidden");
   document.querySelector(".cancel").onclick = () => modal.classList.add("hidden");
   document.getElementById("editForm").onsubmit = saveSession;
@@ -15,30 +17,62 @@ async function loadData() {
     const res = await fetch("/schedule.json?t=" + Date.now());
     data = await res.json();
 
-    const sel = document.getElementById("roomFilter");
+    // Populate room filter
+    /* const sel = document.getElementById("roomFilter");
     sel.innerHTML = `<option value="">All Rooms</option>`;
-    data.rooms.forEach(r => sel.add(new Option(r, r)));
+    data.rooms.forEach(r => sel.add(new Option(r, r))); */
+
+    // Populate header
+    theadRow.innerHTML = `<th>Time / Round</th>`;
+    data.rooms.forEach(r => {
+      const th = document.createElement("th");
+      th.textContent = r;
+      theadRow.appendChild(th);
+    });
 
     render();
   } catch (e) {
-    document.body.innerHTML = "<h2 style='color:#f87171;text-align:center;margin:4rem'>Failed to load schedule.json<br>Run importer first!</h2>";
+    document.body.innerHTML = "<h2 style='color:#f87171;text-align:center;margin:4rem'>Failed to load schedule.json</h2>";
   }
 }
 
 function render() {
-  const room = document.getElementById("roomFilter").value;
-  let list = data.sessions;
-  if (room) list = list.filter(s => s.room === room);
-  list.sort((a,b) => a.start_time.localeCompare(b.start_time));
+  /* const selectedRoom = document.getElementById("roomFilter").value; */
+  const sessionsByRound = {};
 
-  document.getElementById("sessions").innerHTML = list.map(s => `
-    <div class="card" onclick="openEdit('${s.id}')">
-      <div class="time">${s.time_slot} ${s.round ? '· ' + escape(s.round) : ''}</div>
-      <div class="title">${escape(s.title)}</div>
-      <div class="speakers">${escape(s.speakers?.join(", ") || "—")}</div>
-      <div class="room">${escape(s.room)}</div>
-    </div>
-  `).join("") || "<p style='grid-column:1/-1;text-align:center;opacity:0.7'>No sessions found</p>";
+  data.sessions.forEach(s => {
+    const key = `${s.round || "Other"}|||${s.time_slot}`;
+    if (!sessionsByRound[key]) {
+      sessionsByRound[key] = { round: s.round || "Other", time_slot: s.time_slot, cells: {} };
+    }
+    sessionsByRound[key].cells[s.room] = s;
+  });
+
+  const sorted = Object.keys(sessionsByRound).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
+
+  tbody.innerHTML = sorted.map(key => {
+    const item = sessionsByRound[key];
+    const tr = document.createElement("tr");
+
+    const timeTd = document.createElement("td");
+    timeTd.innerHTML = `<strong>${escape(item.round)}</strong><br><small>${escape(item.time_slot)}</small>`;
+    tr.appendChild(timeTd);
+
+    data.rooms.forEach(room => {
+      const td = document.createElement("td");
+      const session = item.cells[room];
+      if (session) {
+        td.innerHTML = `
+          <div class="session-card" onclick="openEdit('${session.id}')">
+            <div class="session-title">${escape(session.title)}</div>
+            ${session.speakers?.length ? `<div class="session-speakers">${session.speakers.map(escape).join(", ")}</div>` : ""}
+          </div>`;
+      }
+      tr.appendChild(td);
+    });
+
+    return tr.outerHTML;
+  }).join("");
 }
 
 function openEdit(id) {
@@ -50,7 +84,6 @@ function openEdit(id) {
   document.getElementById("editTitle").value = s.title;
   document.getElementById("editDesc").value = s.description || "";
   document.getElementById("editSpeakers").value = s.speakers?.join(", ") || "";
-
   modal.classList.remove("hidden");
 }
 
@@ -61,21 +94,18 @@ async function saveSession(e) {
 
   s.title = document.getElementById("editTitle").value.trim();
   s.description = document.getElementById("editDesc").value.trim();
-  const sp = document.getElementById("editSpeakers").value;
-  s.speakers = sp ? sp.split(",").map(x => x.trim()).filter(Boolean) : [];
+  s.speakers = document.getElementById("editSpeakers").value
+    .split(",").map(x => x.trim()).filter(Boolean);
 
-  try {
-    await fetch("/api/save-schedule", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rooms: data.rooms, sessions: data.sessions }, null, 2)
-    });
-    alert("Saved!");
-    modal.classList.add("hidden");
-    render();
-  } catch (err) {
-    alert("Save failed");
-  }
+  await fetch("/api/save-schedule", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rooms: data.rooms, sessions: data.sessions }, null, 2)
+  });
+
+  alert("Saved!");
+  modal.classList.add("hidden");
+  render();
 }
 
 function escape(text) {

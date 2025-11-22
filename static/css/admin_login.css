@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f172a;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.login-box {
+  background: #1e293b;
+  padding: 3rem 2.5rem;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 2rem;
+}
+
+input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  margin: 0.8rem 0;
+  border: none;
+  border-radius: 12px;
+  background: #334155;
+  color: white;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+input:focus {
+  outline: 2px solid #60a5fa;
+  background: #475569;
+}
+
+button {
+  background: #10b981;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1.5rem;
+  transition: background 0.3s;
+}
+button:hover {
+  background: #059669;
+}
+
+.error {
+  color: #fca5a5;
+  margin-top: 1rem;
+  min-height: 1.5em;
+  font-size: 0.95rem;
+}
