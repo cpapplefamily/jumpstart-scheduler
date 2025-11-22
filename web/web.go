@@ -17,4 +17,6 @@ func SetupRoutes() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", IndexPage)
 	http.HandleFunc("/import", ImportPage)
+	http.HandleFunc("/schedule", SchedulePage)
+	http.Handle("/schedule.json", http.FileServer(http.Dir(".")))
 }

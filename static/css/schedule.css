@@ -1,0 +1,110 @@
+/* static/css/schedule.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+header h1 {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+header p { font-size: 1.3rem; opacity: 0.9; }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+#search, #roomFilter {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #1e293b;
+  color: white;
+  min-width: 280px;
+}
+#search:focus, #roomFilter:focus { outline: 2px solid #60a5fa; }
+
+#sessions {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.session {
+  background: #1e293b;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.session:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(96,165,250,0.2);
+}
+
+.session-header {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  padding: 1rem;
+  color: white;
+}
+.session-time { font-size: 1.1rem; font-weight: 600; }
+.session-round { font-size: 0.9rem; opacity: 0.9; margin-top: 0.3rem; }
+
+.session-body {
+  padding: 1.5rem;
+}
+.session-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #60a5fa;
+}
+.session-room {
+  background: #334155;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+.session-desc {
+  margin: 1rem 0;
+  opacity: 0.9;
+}
+.session-speakers {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+.session-speakers strong { color: #a78bfa; }
+
+#no-results {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.4rem;
+  opacity: 0.7;
+}
+
+.hidden { display: none; }
+
+@media (max-width: 640px) {
+  header h1 { font-size: 2.2rem; }
+  .controls { flex-direction: column; align-items: center; }
+  #search, #roomFilter { width: 100%; max-width: 400px; }
+}

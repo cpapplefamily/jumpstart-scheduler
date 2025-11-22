@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JUMPSTART 2024 Schedule</title>
+  <link rel="stylesheet" href="/static/css/schedule.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>JUMPSTART 2024 Schedule</h1>
+      <p>St. Cloud State University</p>
+    </header>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search sessions, speakers, rooms..." />
+      <select id="roomFilter">
+        <option value="">All Rooms</option>
+        <option>Voyageurs South</option>
+        <option>Voyageurs North</option>
+        <option>Glacier South</option>
+        <option>Glacier North</option>
+        <option>Cascade</option>
+        <option>Theater</option>
+        <option>Gallery</option>
+        <option>Alumni Room</option>
+        <option>Mississippi</option>
+        <option>Valhalla</option>
+      </select>
+    </div>
+
+    <div id="sessions"></div>
+    <div id="no-results" class="hidden">No sessions found.</div>
+  </div>
+
+  <script src="/static/js/schedule.js"></script>
+</body>
+</html>
